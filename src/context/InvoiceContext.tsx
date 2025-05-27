@@ -75,7 +75,11 @@ export const InvoiceProvider = ({ children }: { children: ReactNode }) => {
           tax: inv.tax,
           total: inv.total,
           balance: inv.balance,
-          payments: Array.isArray(inv.payments) ? inv.payments : [],
+          payments: Array.isArray(inv.payments)
+            ? inv.payments
+                .filter((p: any) => p && typeof p.date === 'string' && typeof p.amount === 'number')
+                .map((p: any) => ({ date: p.date, amount: p.amount }))
+            : [] as Payment[],
           customerName: inv.orders.customer_name
         }));
         
@@ -107,7 +111,7 @@ export const InvoiceProvider = ({ children }: { children: ReactNode }) => {
           sub_total: invoice.subTotal,
           tax: invoice.tax,
           deposit: 0, // Default deposit as 0
-          payments: invoice.payments || []
+          payments: (invoice.payments || []) as any
         });
       
       if (error) throw error;
@@ -130,6 +134,7 @@ export const InvoiceProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  // Update the addPayment function
   const addPayment = async (invoiceId: string, payment: Payment) => {
     try {
       // Get current invoice with payments
@@ -141,8 +146,15 @@ export const InvoiceProvider = ({ children }: { children: ReactNode }) => {
       
       if (fetchError) throw fetchError;
       
-      // Add new payment to the array
-      const currentPayments = currentInvoice.payments || [];
+      // Safe handling of payments - ensure it's always an array
+      const currentPayments = Array.isArray(currentInvoice?.payments) 
+        ? currentInvoice.payments.map((p: any) => ({ 
+            date: p.date, 
+            amount: p.amount 
+          }))
+        : [];
+      
+      // Type-safe update
       const updatedPayments = [...currentPayments, payment];
       
       // Update the invoice with new payments
@@ -167,7 +179,6 @@ export const InvoiceProvider = ({ children }: { children: ReactNode }) => {
         description: 'Could not add the payment to the invoice',
         variant: 'destructive',
       });
-      throw error;
     }
   };
 

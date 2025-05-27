@@ -71,7 +71,7 @@ export async function markMessageAsRead(threadId: string): Promise<boolean> {
 export async function sendEmailReply(
   threadId: string,
   content: string,
-  attachments: File[] = []
+  _attachments: File[] = []
 ): Promise<boolean> {
   try {
     // Find the thread

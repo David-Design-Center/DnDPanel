@@ -1,10 +1,15 @@
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
+import { Database } from '@/lib/database.types';
 
+// Use database types for better type safety
+type ProfileRow = Database['public']['Tables']['profiles']['Row'];
+
+// User interface based on profiles table in the database
 interface User {
-  id: string;
-  username: string;
-  role: 'admin' | 'user';
+  id: ProfileRow['id'];
+  full_name: ProfileRow['full_name'];
+  role: ProfileRow['role'];
 }
 
 interface UserContextType {
@@ -25,13 +30,14 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
+        // Updated to use profiles table which exists in database types
         const { data, error } = await supabase
-          .from('users')
-          .select('id, username, role')
-          .order('username');
+          .from("profiles")
+          .select('id, full_name, role')
+          .eq('role', 'admin');
 
         if (error) {
-          console.error('Error fetching users:', error);
+          console.error('Error fetching profiles:', error);
           return;
         }
 
@@ -46,28 +52,37 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
     fetchUsers();
   }, []);
 
+  // We need to add auth functionality since profiles doesn't have passwords
   const loginAsAdmin = async (username: string, password: string) => {
     try {
-      const { data, error } = await supabase
-        .from('users')
-        .select('id, username, role, password')
-        .eq('username', username)
+      // First authenticate with Supabase auth
+      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+        email: username, // assuming username is an email
+        password: password,
+      });
+
+      if (authError || !authData.user) {
+        return { success: false, message: 'Invalid credentials' };
+      }
+
+      // Then fetch the user profile to check role
+      const { data: profileData, error: profileError } = await supabase
+        .from('profiles')
+        .select('id, full_name, role')
+        .eq('id', authData.user.id)
         .eq('role', 'admin')
         .single();
 
-      if (error) {
-        return { success: false, message: 'User not found' };
+      if (profileError || !profileData) {
+        await supabase.auth.signOut(); // Sign out if not admin
+        return { success: false, message: 'Not authorized as admin' };
       }
 
-      if (data.password !== password) {
-        return { success: false, message: 'Invalid password' };
-      }
-
-      // If password is correct, set the current user
+      // Set current user
       setCurrentUser({
-        id: data.id,
-        username: data.username,
-        role: data.role,
+        id: profileData.id,
+        full_name: profileData.full_name,
+        role: profileData.role,
       });
 
       return { success: true };

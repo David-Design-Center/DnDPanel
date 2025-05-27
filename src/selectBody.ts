@@ -25,3 +25,5 @@ export function selectBestPart(root: MimeNode): MimeNode | null {
 
   return textPlain;
 }
+
+export type { MimeNode } from './mimeTree';

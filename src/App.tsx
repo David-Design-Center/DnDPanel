@@ -9,7 +9,6 @@ import EmailComposer from '@/components/views/EmailComposer';
 import { MessageProvider } from '@/context/MessageContext';
 import { OrderProvider } from '@/context/OrderContext';
 import { UserProvider } from '@/context/UserContext';
-import { InvoiceProvider } from '@/context/InvoiceContext';
 import { useUser } from '@/context/UserContext';
 
 // Admin route protection component
@@ -31,7 +30,7 @@ function App() {
       <UserProvider>
         <MessageProvider>
           <OrderProvider>
-            <InvoiceProvider>
+            
               <Layout>
                 <Routes>
                   <Route 
@@ -48,7 +47,6 @@ function App() {
                   <Route path="/email-composer" element={<EmailComposer />} />
                 </Routes>
               </Layout>
-            </InvoiceProvider>
           </OrderProvider>
         </MessageProvider>
       </UserProvider>

@@ -30,7 +30,7 @@ export const UserSelect = () => {
   const { toast } = useToast();
 
   const handleUserSelect = (value: string) => {
-    const selectedUser = users.find(user => user.username === value);
+    const selectedUser = users.find(user => user.full_name === value);
     
     if (!selectedUser) return;
     
@@ -73,14 +73,14 @@ export const UserSelect = () => {
     <>
       <div className="flex items-center gap-2">
         <UserCircle className="h-5 w-5 text-muted-foreground" />
-        <Select onValueChange={handleUserSelect} value={currentUser?.username || ''}>
+        <Select onValueChange={handleUserSelect} value={currentUser?.full_name || ''}>
           <SelectTrigger className="w-[140px]">
             <SelectValue placeholder="Select User" />
           </SelectTrigger>
           <SelectContent>
             {users.map(user => (
-              <SelectItem key={user.id} value={user.username}>
-                {user.username} {user.role === 'admin' ? '(Admin)' : ''}
+              <SelectItem key={user.id} value={user.full_name || ''}>
+                {user.full_name || ''} {user.role === 'admin' ? '(Admin)' : ''}
               </SelectItem>
             ))}
           </SelectContent>
