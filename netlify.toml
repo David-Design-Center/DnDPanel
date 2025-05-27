@@ -1,0 +1,12 @@
+# Netlify configuration file
+
+[build]
+  command = "npm run build:netlify"
+  publish = "dist"
+
+# No plugins needed for Vite
+
+# Environment variable configuration
+[build.environment]
+  NODE_VERSION = "22.16.0"
+  NPM_VERSION = "10.9.2"

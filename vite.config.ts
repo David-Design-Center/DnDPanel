@@ -6,7 +6,10 @@ import { NodeModulesPolyfillPlugin } from '@esbuild-plugins/node-modules-polyfil
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-  plugins: [react(), polyfillNode()],
+  plugins: [
+    react(), 
+    polyfillNode()
+  ],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),

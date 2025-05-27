@@ -6,8 +6,8 @@ describe('selectBestPart', () => {
       mimeType: 'multipart/mixed',
       headers: {},
       parts: [
-        { mimeType: 'text/plain', headers: {}, content: 'plain' },
-        { mimeType: 'text/html', headers: {}, content: '<p>html</p>' }
+        { mimeType: 'text/plain', headers: {}, content: 'plain', parts: [] },
+        { mimeType: 'text/html', headers: {}, content: '<p>html</p>', parts: [] }
       ]
     };
     const best = selectBestPart(tree);
@@ -19,8 +19,8 @@ describe('selectBestPart', () => {
       mimeType: 'multipart/alternative',
       headers: {},
       parts: [
-        { mimeType: 'text/plain', headers: {}, content: 'plain1' },
-        { mimeType: 'text/plain', headers: {}, content: 'plain2' }
+        { mimeType: 'text/plain', headers: {}, content: 'plain1', parts: [] },
+        { mimeType: 'text/plain', headers: {}, content: 'plain2', parts: [] }
       ]
     };
     const best = selectBestPart(tree);
@@ -36,7 +36,7 @@ describe('selectBestPart', () => {
           mimeType: 'multipart/alternative',
           headers: {},
           parts: [
-            { mimeType: 'text/plain', headers: {}, content: 'plain' }
+            { mimeType: 'text/plain', headers: {}, content: 'plain', parts: [] }
           ]
         }
       ]
@@ -47,7 +47,7 @@ describe('selectBestPart', () => {
   });
 
   it('returns null on no body', () => {
-    const tree: MimeNode = { mimeType: 'application/octet-stream', headers: {} };
+    const tree: MimeNode = { mimeType: 'application/octet-stream', headers: {}, parts: [] };
     expect(selectBestPart(tree)).toBeNull();
   });
 });

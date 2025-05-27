@@ -2,11 +2,7 @@
 import { supabase } from './supabase';
 import { Database } from './database.types';
 
-type Order = Database['public']['Tables']['orders']['Row'];
-type OrderItem = Database['public']['Tables']['order_items']['Row'];
-type Invoice = Database['public']['Tables']['invoices']['Row'];
 type Profile = Database['public']['Tables']['profiles']['Row'];
-type Message = Database['public']['Tables']['messages']['Row'];
 
 // Profile functions
 export async function getCurrentProfile() {

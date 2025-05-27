@@ -10,6 +10,7 @@ interface User {
   id: ProfileRow['id'];
   full_name: ProfileRow['full_name'];
   role: ProfileRow['role'];
+  username: string; // Add username field to fix type errors
 }
 
 interface UserContextType {
@@ -41,7 +42,13 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
           return;
         }
 
-        setUsers(data as User[]);
+        // Add username using full_name or id as fallback
+        const usersWithUsernames = data.map(profile => ({
+          ...profile,
+          username: profile.full_name || profile.id
+        }));
+
+        setUsers(usersWithUsernames as User[]);
       } catch (error) {
         console.error('Error in fetchUsers:', error);
       } finally {
@@ -78,11 +85,12 @@ export const UserProvider = ({ children }: { children: ReactNode }) => {
         return { success: false, message: 'Not authorized as admin' };
       }
 
-      // Set current user
+      // Set current user with email as username
       setCurrentUser({
         id: profileData.id,
         full_name: profileData.full_name,
         role: profileData.role,
+        username: authData.user.email || username, // Use email as username or fallback to provided username
       });
 
       return { success: true };
