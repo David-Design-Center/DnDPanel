@@ -1,12 +1,28 @@
 # Netlify configuration file
 
 [build]
-  command = "npm run build:netlify"
+  command = "chmod +x ./netlify-build.sh && ./netlify-build.sh"
   publish = "dist"
-
-# No plugins needed for Vite
+  
+[build.processing]
+  skip_processing = true
 
 # Environment variable configuration
 [build.environment]
-  NODE_VERSION = "22.16.0"
-  NPM_VERSION = "10.9.2"
+  # Use Node 16 which has better compatibility with these libraries
+  NODE_VERSION = "16.20.2" 
+  NPM_VERSION = "8.19.4"
+  CI = "true"
+  # Add environment variables to help with React issues
+  VITE_CJS_IGNORE_WARNING = "true"
+  NODE_OPTIONS = "--max-old-space-size=4096"
+  
+# All deploy contexts use the same command and settings
+[context.production]
+  command = "npm run build:netlify"
+
+[context.deploy-preview]
+  command = "npm run build:netlify"
+  
+[context.branch-deploy]
+  command = "npm run build:netlify"

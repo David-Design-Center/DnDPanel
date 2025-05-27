@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "build:netlify": "chmod +x ./netlify-build.sh && ./netlify-build.sh",
+    "build:fallback": "node ./netlify-direct-build.js",
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "jest"
