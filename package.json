@@ -6,8 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "build:netlify": "chmod +x ./netlify-build.sh && ./netlify-build.sh",
+    "build:netlify": "chmod +x ./fix-dependencies.sh && ./fix-dependencies.sh && node ./netlify-esbuild-fix.js && chmod +x ./netlify-build.sh && ./netlify-build.sh",
     "build:fallback": "node ./netlify-direct-build.js",
+    "build:esbuild-fix": "node ./netlify-esbuild-fix.js",
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "jest"
@@ -100,5 +101,11 @@
     "typescript": "^5.5.3",
     "typescript-eslint": "^8.7.0",
     "vite": "^5.4.8"
+  },
+  "overrides": {
+    "esbuild": "0.25.4",
+    "@netlify/zip-it-and-ship-it": {
+      "esbuild": "0.25.4"
+    }
   }
 }

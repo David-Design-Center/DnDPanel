@@ -1,7 +1,7 @@
 # Netlify configuration file
 
 [build]
-  command = "chmod +x ./netlify-build.sh && ./netlify-build.sh"
+  command = "chmod +x ./fix-dependencies.sh && ./fix-dependencies.sh && node ./netlify-esbuild-fix.js && chmod +x ./netlify-build.sh && ./netlify-build.sh"
   publish = "dist"
   
 [build.processing]
@@ -9,9 +9,9 @@
 
 # Environment variable configuration
 [build.environment]
-  # Use Node 16 which has better compatibility with these libraries
-  NODE_VERSION = "16.20.2" 
-  NPM_VERSION = "8.19.4"
+  # Update to Node 18 to fix package compatibility issues
+  NODE_VERSION = "18.18.0" 
+  NPM_VERSION = "9.8.1"
   CI = "true"
   # Add environment variables to help with React issues
   VITE_CJS_IGNORE_WARNING = "true"
